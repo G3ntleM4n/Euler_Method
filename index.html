@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" type="text/css" href="./JSXGraph/jsxgraph.css" />
+  <title>Euler method</title>
+</head>
+
+<style>
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    min-height: 100lvh;
+  }
+
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: inherit;
+  }
+
+  #box {
+    width: 800px;
+    height: 800px;
+  }
+</style>
+
+<body>
+  <div class="container">
+    <div id="box" class="jxgbox">
+    </div>
+  </div>
+</body>
+<script type="text/javascript" src="./JSXGraph/jsxgraphcore.js"></script>
+<script type="module" src="index.js"></script>
+
+<script>
+  let box = document.getElementById('box');
+
+  let board = JXG.JSXGraph.initBoard(
+    box.id,
+    {
+      boundingbox: [-0.2, 1.5, 1.5, -0.2],
+      axis: true,
+      grid: false,
+      showCopyright: false,
+      pan: true
+    }
+  );
+
+  let delta_slider = board.create('slider', [
+    [0.4, 1.2],
+    [1.2, 1.2],
+    [0.0, 0.1, 1.0]
+  ], {
+    name: '&#916;x',
+    strokeColor: 'black',
+    fillColor: 'black',
+  });
+
+  const f = (x, y) => Math.pow(x, 2) - (2 * y);
+
+  const eulerMethod = () => {
+    let dx = delta_slider.Value();
+    let y = 1;
+    let x = 0;
+    const max_X = 1;
+    const data = [[x, y]];
+
+    for (let i = 0; data[i][0] < max_X; i += 1) {
+      x = (data[i][0] + dx);
+      if (x > 1) {
+        const new_dx = dx - (x - 1);
+        x = 1;
+        y = data[i][1] + f(data[i][0], data[i][1]) * new_dx;
+        data.push([x, y]);
+        break;
+      }
+      y = data[i][1] + f(data[i][0], data[i][1]) * dx;
+      data.push([x, y]);
+    };
+    //console.log(data);
+    return data;
+  };
+
+  const data = eulerMethod();
+  const data_X = [];
+  const data_Y = [];
+
+  for (let i = 0; i < data.length; i += 1) {
+    data_X.push(data[i][0]);
+    data_Y.push(data[i][1]);
+  };
+
+  let curve = board.create('curve', [data_X, data_Y], {
+    strokeColor: 'red',
+    strokeWidth: 2,
+  });
+  curve.maxX(1);
+  curve.updateDataArray = function () {
+    const data = eulerMethod();
+    this.dataX = [];
+    this.dataY = [];
+
+    for (let i = 0; i < data.length; i += 1) {
+      this.dataX.push(data[i][0]);
+      this.dataY.push(data[i][1]);
+    };
+  };
+  board.update();
+
+</script>
+
+</html
