@@ -5,36 +5,27 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" type="text/css" href="./JSXGraph/jsxgraph.css" />
+  <link rel="stylesheet" type="text/css" href="style.css" />
   <title>Euler method</title>
 </head>
 
 <style>
-  * {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-  }
 
-  body {
-    min-height: 100lvh;
-  }
-
-  .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: inherit;
-  }
-
-  #box {
-    width: 800px;
-    height: 800px;
-  }
 </style>
 
 <body>
   <div class="container">
-    <div id="box" class="jxgbox">
+    <div id="box" class="jxgbox"></div>
+    <div class="lists_container">
+      <div class="list_container list_1">
+        <ul class="list">
+          <li class="list_item"><b>Shift + LMB</b>: move</li>
+          <li class="list_item"><b>Shift + Scroll</b>: zoom in / zoom out</li>
+        </ul>
+      </div>
+      <div class="list_container list_2">
+        <ul class="array_list"></ul>
+      </div>
     </div>
   </div>
 </body>
@@ -58,7 +49,7 @@
   let delta_slider = board.create('slider', [
     [0.4, 1.2],
     [1.2, 1.2],
-    [0.0, 0.1, 1.0]
+    [0.01, 0.1, 1.0]
   ], {
     name: '&#916;x',
     strokeColor: 'black',
@@ -103,7 +94,6 @@
     strokeColor: 'red',
     strokeWidth: 2,
   });
-  curve.maxX(1);
   curve.updateDataArray = function () {
     const data = eulerMethod();
     this.dataX = [];
@@ -113,6 +103,22 @@
       this.dataX.push(data[i][0]);
       this.dataY.push(data[i][1]);
     };
+
+    const list = document.getElementsByClassName('array_list');
+    let i = 1;
+
+    const html = data.map(([x, y]) => {
+      const result = `
+        <li class="list_item">
+          <b>x${i}</b>: ${x.toFixed(3)}&nbsp;&nbsp;|&nbsp;&nbsp;
+          <b>y${i}</b>: ${y.toFixed(3)}
+        </li>\n
+        <hr>
+      `
+      i += 1;
+      return result;
+    }).join('');
+    document.querySelector('.array_list').innerHTML = html;
   };
   board.update();
 
