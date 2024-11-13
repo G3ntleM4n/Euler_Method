@@ -9,10 +9,6 @@
   <title>Euler method</title>
 </head>
 
-<style>
-
-</style>
-
 <body>
   <div class="container">
     <div id="box" class="jxgbox"></div>
@@ -77,7 +73,6 @@
       y = data[i][1] + f(data[i][0], data[i][1]) * dx;
       data.push([x, y]);
     };
-    //console.log(data);
     return data;
   };
 
@@ -105,13 +100,15 @@
     };
 
     const list = document.getElementsByClassName('array_list');
-    let i = 1;
+    let i = 0;
 
     const html = data.map(([x, y]) => {
       const result = `
         <li class="list_item">
           <b>x${i}</b>: ${x.toFixed(3)}&nbsp;&nbsp;|&nbsp;&nbsp;
-          <b>y${i}</b>: ${y.toFixed(3)}
+          <b>y${i}</b>: ${y.toFixed(3)}&nbsp;&nbsp;|&nbsp;&nbsp;
+          <b>f(x${i}, y${i})</b>: ${f(x, y).toFixed(3)}&nbsp;&nbsp;|&nbsp;&nbsp;
+          <b>hf(x${i}, y${i})</b>: ${(delta_slider.Value() * f(x, y)).toFixed(3)}
         </li>\n
         <hr>
       `
