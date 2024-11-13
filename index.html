@@ -52,24 +52,28 @@
     fillColor: 'black',
   });
 
-  const f = (x, y) => Math.pow(x, 2) - (2 * y);
+  const f = (x, y) => Math.pow(x, 2) - (2 * y); // Начальное дифференциальное уравнение
 
   const eulerMethod = () => {
-    let dx = delta_slider.Value();
-    let y = 1;
-    let x = 0;
-    const max_X = 1;
-    const data = [[x, y]];
+    let dx = delta_slider.Value(); // шаг
+    let y = 1; // начальное значение y(x)
+    let x = 0; // начальное значение x
+    const max_X = 1; // правая граница отрезка [0;1]
+    const data = [[x, y]]; // массив координат
 
     for (let i = 0; data[i][0] < max_X; i += 1) {
-      x = (data[i][0] + dx);
+      x = (data[i][0] + dx); // Находим новый x
+
       if (x > 1) {
+        // Если конечный х больше 1, меняем шаг так,
+        // чтобы он вел к точке со значением х = 1 и приравниваем х = 1
         const new_dx = dx - (x - 1);
         x = 1;
         y = data[i][1] + f(data[i][0], data[i][1]) * new_dx;
         data.push([x, y]);
         break;
       }
+      // Находим новый y(x) методом Эйлера
       y = data[i][1] + f(data[i][0], data[i][1]) * dx;
       data.push([x, y]);
     };
@@ -85,10 +89,13 @@
     data_Y.push(data[i][1]);
   };
 
+  // Создание кривой по точкам из массива координат
   let curve = board.create('curve', [data_X, data_Y], {
     strokeColor: 'red',
     strokeWidth: 2,
   });
+
+  // Метод для обновления кривой и данных при смене шага
   curve.updateDataArray = function () {
     const data = eulerMethod();
     this.dataX = [];
@@ -102,12 +109,20 @@
     const list = document.getElementsByClassName('array_list');
     let i = 0;
 
+    // Создание html-списка значений
     const html = data.map(([x, y]) => {
       const result = `
         <li class="list_item">
+          <! Отображение значения х -->
           <b>x${i}</b>: ${x.toFixed(3)}&nbsp;&nbsp;|&nbsp;&nbsp;
+
+          <! Отображение значения y -->
           <b>y${i}</b>: ${y.toFixed(3)}&nbsp;&nbsp;|&nbsp;&nbsp;
+
+          <! Отображение значения f(x, y) -->
           <b>f(x${i}, y${i})</b>: ${f(x, y).toFixed(3)}&nbsp;&nbsp;|&nbsp;&nbsp;
+
+          <! Отображение значения hf(x, y) -->
           <b>hf(x${i}, y${i})</b>: ${(delta_slider.Value() * f(x, y)).toFixed(3)}
         </li>\n
         <hr>
@@ -115,6 +130,7 @@
       i += 1;
       return result;
     }).join('');
+    // Отображение html-списка значений
     document.querySelector('.array_list').innerHTML = html;
   };
   board.update();
