@@ -13,8 +13,10 @@ export const eulerMethod = () => {
   let x = 0;
   const max_X = 1;
   const data = [[x, y]];
+
   for (let i = 0; data[i][0] < max_X; i += 1) {
     x = (data[i][0] + dx);
+
     if (x > 1) {
       let new_dx = dx - (x - 1);
       x = 1;
@@ -22,9 +24,11 @@ export const eulerMethod = () => {
       data.push([x, y]);
       break;
     }
+
     y = data[i][1] + f(data[i][0], data[i][1]) * dx;
     data.push([x, y]);
   };
+
   console.log(data);
   return data;
 };
